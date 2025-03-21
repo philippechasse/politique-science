@@ -76,6 +76,32 @@
             color: #ffffff;
         }
 
+        .output_block {
+            background-color: #ffffff;
+            padding: 15px;
+            margin: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .output_block:hover {
+            transform: translateY(-5px);
+        }
+
+        .title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .date {
+            color: #777;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
         @media (max-width: 768px) {
             #headBlock {
                 padding: 15px;
@@ -107,6 +133,8 @@
 <div id="descEN" class="accroche"></div>
 <div id="descFR" class="accroche"></div>
 
+<div id="publications"></div>
+
 <script src="./configuration.js"></script>
 
 <script>
@@ -131,51 +159,39 @@
     document.getElementById('descEN').innerText = config.description.EN.short;
     document.getElementById('descFR').innerText = config.description.FR.short;
 
-    // Function to load publications
+    // Load publications into a specific div
     const getdata = (val) =>
         fetch(
-            `https://api.archives-ouvertes.fr/search/?q=${val}&wt=json&rows=10000&fl=docType_s,docid,authFullName_s,label_s,abstract_s,producedDate_s,conferenceTitle_s,language_s,subTitle_s,title_s,doiId_s,halId_s,journalTitle_s`
+            `https://api.archives-ouvertes.fr/search/?q=${encodeURIComponent(val)}&wt=json&rows=10000&fl=docType_s,docid,authFullName_s,label_s,abstract_s,producedDate_s,conferenceTitle_s,language_s,subTitle_s,title_s,doiId_s,halId_s,journalTitle_s`
         )
             .then(response => response.json())
             .then(r => r.response.docs)
             .then(r => {
-                const siftData = (data, authName) => {
-                    const authLower = authName.toLowerCase();
-                    const sifted = [];
-                    data.forEach(d => {
-                        const authorMap = {};
-                        d.authFullName_s.forEach(auth => authorMap[auth.toLowerCase()] = 1);
-                        if (authorMap.hasOwnProperty(authLower)) {
-                            d.date = new Date(d.producedDate_s);
-                            sifted.push(d);
-                        }
-                    });
-                    return sifted.sort((a, b) => b.date - a.date);
-                };
+                const publicationsDiv = document.getElementById("publications");
+                publicationsDiv.innerHTML = ""; // Clear previous content
 
-                const createblock = (output) => {
+                r.forEach(output => {
                     const cont = document.createElement("div");
                     cont.className = "output_block";
+
                     const title = document.createElement("div");
                     title.className = "title";
-                    title.innerText = output.title_s[0] || 'No Title';
+                    title.innerText = output.title_s ? output.title_s[0] : 'No Title';
                     cont.append(title);
 
                     const authors = document.createElement("div");
-                    authors.innerText = output.authFullName_s.join(", ");
+                    authors.innerText = output.authFullName_s ? output.authFullName_s.join(", ") : 'No Authors';
                     cont.append(authors);
 
                     const date = document.createElement("div");
                     date.className = "date";
-                    date.innerText = `${output.producedDate_s} - ${output.docType_s}`;
+                    date.innerText = `${output.producedDate_s || 'No Date'} - ${output.docType_s || 'No Type'}`;
                     cont.append(date);
 
-                    document.body.append(cont);
-                };
-
-                const sifted = siftData(r, val);
-                sifted.forEach(d => createblock(d));
-            });
+                    publicationsDiv.append(cont);
+                });
+            })
+            .catch(error => console.error("Error loading data:", error));
 
     getdata(config.name);
 </script>
