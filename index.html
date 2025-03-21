@@ -8,7 +8,7 @@
 
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Helvetica', sans-serif;
             line-height: 1.6;
             color: #333;
             background-color: #f9f9f9;
@@ -40,8 +40,15 @@
         #name {
             font-size: 2rem;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             color: #222;
+            text-align: center;
+        }
+
+        #subtitle {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 10px;
             text-align: center;
         }
 
@@ -126,6 +133,10 @@
                 font-size: 1.8rem;
             }
 
+            #subtitle {
+                font-size: 0.9rem;
+            }
+
             #links {
                 gap: 10px;
             }
@@ -141,11 +152,14 @@
 <div id="headBlock">
     <img id="headshotimg" src="./headshot.jpg" alt="Profile Picture">
     <div id="name"></div>
+    <div id="subtitle">Candidat au doctorat en science politique à l'Université de Montréal et à Sciences Po</div>
     <div id="links"></div>
 </div>
 
 <div id="descEN" class="accroche"></div>
 <div id="descFR" class="accroche"></div>
+
+<div id="publications"></div>
 
 <script src="./configuration.js"></script>
 <script>
@@ -163,6 +177,23 @@
 
     document.getElementById('descEN').innerText = config.description.EN.short;
     document.getElementById('descFR').innerText = config.description.FR.short;
+
+    // Function to load publications
+    const getData = (val) => {
+        fetch(`https://api.archives-ouvertes.fr/search/?q=${val}&wt=json&rows=10000&fl=docType_s,docid,authFullName_s,label_s,abstract_s,producedDate_s,conferenceTitle_s,language_s,subTitle_s,title_s,doiId_s,halId_s,journalTitle_s`)
+            .then(response => response.json())
+            .then(data => {
+                const publicationsDiv = document.getElementById("publications");
+                data.response.docs.forEach(doc => {
+                    const block = document.createElement("div");
+                    block.className = "output_block";
+                    block.innerHTML = `<div class='title'>${doc.title_s[0]}</div><div class='date'>${doc.producedDate_s} - ${doc.docType_s}</div>`;
+                    publicationsDiv.appendChild(block);
+                });
+            });
+    };
+
+    getData(config.name);
 </script>
 
 </body>
