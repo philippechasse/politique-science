@@ -8,110 +8,367 @@
     line-height: 1.5;
   }
 
-  #headBlock {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: white;
+  @media (max-aspect-ratio: 2/2) {
+    #headBlock {
+      padding: 10px;
+      display: flex;
+      width: calc(100% - 20px);
+      top: 0px;
+      background: white;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #name {
+      font-size: 4rem;
+    }
+
+    #headshotimg {
+      max-width: 250px;
+      border-radius: 250px;
+    }
+
+    #identity {
+      display: flex;
+      align-items: center;
+      min-width: 450px;
+      flex-direction: column;
+    }
+
+    .link {
+      font-size: 40px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #links {
+      padding: 60px;
+    }
   }
 
-  #name {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-top: 10px;
-    text-align: center;
-  }
+  @media (min-aspect-ratio: 2/2) {
+    #headshotimg {
+      max-width: 100px;
+      border-radius: 100px;
+    }
 
-  #headshotimg {
-    max-width: 150px;
-    border-radius: 50%;
-    margin-bottom: 10px;
-  }
+    .output_block {
+      padding-bottom: 45px;
 
-  #links {
-    display: flex;
-    gap: 15px;
-    margin-top: 15px;
-  }
+    }
 
-  .link-button {
-    display: inline-block;
-    padding: 8px 16px;
-    font-size: 14px;
-    color: white;
-    background-color: #4CAF50;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.2s ease;
-  }
+    #name {
+      font-size: 2rem;
+      padding-left: 20px;
+    }
 
-  .link-button:hover {
-    background-color: #45a049;
-  }
+    #headBlock {
+      padding: 10px;
+      display: flex;
 
-  .link-button:active {
-    background-color: #3e8e41;
+      justify-content: space-between;
+      width: calc(100% - 20px);
+      position: sticky;
+      top: 0px;
+      background: white;
+    }
+
+    #links {
+      width: 130px;
+
+    }
+
+    #identity {
+      display: flex;
+      align-items: center;
+
+    }
+
+    .link {
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
   }
 
   .accroche {
     font-size: 1.1rem;
+    cursor: pointer;
     padding: 15px;
-    text-align: center;
+  }
+
+  .abstract {
+    cursor: pointer;
+  }
+
+  a[href] {
+    color: red;
+  }
+
+  .output_block {
+    font-size: 1rem;
+    padding: 15px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+  }
+
+  .title {
+    font-weight: bolder;
+    font-size: 16px;
+  }
+
+  .title_other_lang {
+    font-style: italic;
+    color: gray;
   }
 </style>
 
 <div id="headBlock">
   <div id="identity">
-    <div id="headshot">
-      <img id="headshotimg" src="./headshot.jpg">
-    </div>
+    <div id="headshot"><img id="headshotimg" src="./headshot.jpg"></div>
     <div id="name"></div>
   </div>
   <div id="links"></div>
 </div>
 
 <div class="accroche" id="descEN"></div>
+
 <div class="accroche" id="descFR"></div>
 
 <script src="./configuration.js"></script>
 
 <script>
+
   const linksDiv = document.getElementById("links");
 
   const addLink = (linkConfig) => {
-    const button = document.createElement("a");
-    button.className = "link-button";
-    button.href = linkConfig.url;
-    button.target = "_blank";
-    button.innerText = linkConfig.label;
-    linksDiv.append(button);
-  };
+    const rubrique = document.createElement("div");
+    rubrique.className = "link";
+    rubrique.innerHTML = `${linkConfig.label}: <a target="_blank" href="${linkConfig.url}">${linkConfig.value}</a>`
+    linksDiv.append(rubrique)
+  }
 
-  config.links.forEach(link => addLink(link));
+  config.links.forEach(link => addLink(link))
 
-  // Insert name in document header
+  // insert name in document header
   document.getElementById("name").innerText = config.name;
   document.title = config.name;
 
-  // Insert email as button
-  const emailButton = document.createElement("a");
-  emailButton.className = "link-button";
-  emailButton.href = `mailto:${config.email.name}@${config.email.domain}`;
-  emailButton.innerText = "Email";
-  linksDiv.append(emailButton);
+  // insert email
 
-  // Populate personal description
+  const email = document.createElement("div");
+  email.className = "link";
+  email.innerHTML = `email: ${config.email.name}<br>${config.email.domain}`
+  linksDiv.append(email)
+
+  // populate personal description
   const personDescription = () => {
     Object.keys(config.description).forEach(d => {
-      const div = document.getElementById("desc" + d);
+      const div = document.getElementById("desc" + d)
       div.innerHTML = config.description[d].short;
-    });
-  };
+    })
+  }
 
   personDescription();
+
+  const getdata = (val) =>
+    fetch(
+      `https://api.archives-ouvertes.fr/search/?q=${val}&wt=json&rows=10000&fl=docType_s,docid,authFullName_s,label_s,abstract_s,producedDate_s,conferenceTitle_s,language_s,subTitle_s,title_s,doiId_s,halId_s,journalTitle_s`
+    )
+      .then((response) => response.json())
+      .then((r) => r.response.docs)
+      .then((r) => {
+
+        const siftData = (data, authName) => {
+          const authLower = authName.toLowerCase();
+
+          const sifted = [];
+
+          data.forEach((d) => {
+            const authorMap = {};
+
+            d.authFullName_s.forEach(
+              (auth) => (authorMap[auth.toLowerCase()] = 1)
+            );
+
+            if (authorMap.hasOwnProperty(authLower)) {
+              d.date = new Date(d.producedDate_s);
+              sifted.push(d);
+            }
+          });
+
+          return sifted.sort((a, b) => b.date - a.date);
+        };
+        const createblock = (output) => {
+          // for each sci output, create an HTML block
+          const cont = document.createElement("div");
+          cont.className = "output_block";
+
+          const title = document.createElement("div");
+
+          for (let i = 0; i < output.title_s.length; ++i) {
+            const title_l = document.createElement("div");
+            if (i === 0) {
+              title_l.className = "title";
+            } else {
+              title_l.className = "title_other_lang";
+            }
+
+            title_l.innerText = output.title_s[i];
+            title.append(title_l);
+          }
+
+          const authors = document.createElement("div");
+          authors.className = "authors";
+
+          for (let i = 0; i < output.authFullName_s.length; ++i) {
+            authors.innerText += output.authFullName_s[i];
+            if (
+              output.authFullName_s.length > 1 &&
+              i < output.authFullName_s.length - 1
+            ) {
+              authors.innerText += ", ";
+            }
+          }
+
+          cont.append(title);
+
+          cont.append(authors);
+
+          var venue = ""
+
+          if (output.hasOwnProperty("journalTitle_s")) {
+            venue = " - " + output.journalTitle_s;
+          }
+
+          if (output.hasOwnProperty("conferenceTitle_s")) {
+            venue = " - " + output.conferenceTitle_s;
+          }
+
+          const date = document.createElement("div");
+          date.className = "date";
+          date.innerText =
+            output.producedDate_s + venue + " - " + output.docType_s.toLowerCase();
+          cont.append(date);
+
+          if (output.hasOwnProperty("abstract_s")) {
+            const lang = "[" + output.language_s[0].toUpperCase() + "] ";
+            const abstract = document.createElement("div");
+            abstract.className = "abstract";
+            abstract.innerText =
+              lang +
+              output.abstract_s[0].substring(0, 240) +
+              "… [click to read more]";
+
+            abstract.addEventListener("click", (e) => {
+              if (abstract.innerText.length < 270) {
+                abstract.innerText = lang + output.abstract_s[0];
+              } else {
+                abstract.innerText =
+                  lang +
+                  output.abstract_s[0].substring(0, 240) +
+                  "… [click to read more]";
+              }
+            });
+
+            cont.append(abstract);
+          }
+
+          if (output.hasOwnProperty("doiId_s")) {
+            const doi = document.createElement("div");
+
+            doi.innerHTML = `<a class="doi" href="https://doi.org/${output.doiId_s}" target="_blank">${output.doiId_s}</a>`;
+            cont.append(doi);
+          } else {
+            const hal = document.createElement("div");
+
+            hal.innerHTML = `<a href="https://hal.science/${output.halId_s}" target="_blank">${output.halId_s}</a>`;
+            cont.append(hal);
+          }
+
+          cont.append(document.createElement("br"))
+
+
+          return cont;
+        };
+
+        const sifted = siftData(r, val);
+
+        const createList = () => {
+          const container = document.createElement("div");
+
+          const list = document.createElement("div");
+          list.id = "doclist"
+          sifted.forEach((d) => list.append(createblock(d)));
+          container.append(list, genrateButtons())
+          document.body.append(container);
+        };
+
+        createList();
+      })
+
+
+  const genrateButtons = () => {
+    const buttonList = document.createElement("div");
+
+    // create a bibliography;
+    const biblioButton = document.createElement("button");
+    biblioButton.innerText = "Copy document list to clipboard"
+    biblioButton.addEventListener("click", () => {
+      const doclist = document.getElementById("doclist")
+      const abstracts = doclist.getElementsByClassName("abstract")
+      for (let i = 0; i < abstracts.length; i++) {
+        abstracts[i].innerText = abstracts[i].innerText.replace("[click to read more]", "")
+
+      }
+      copyElementToClipboard(doclist)
+    })
+
+    buttonList.append(biblioButton)
+
+    return buttonList
+  }
+
+  //taken from https://stackoverflow.com/questions/48554043/javascript-copy-element-to-clipboard-with-all-styles
+  function copyElementToClipboard(element) {
+    let range;
+    let selection;
+
+    if (!element) {
+      console.error("No element to copy");
+      return;
+    }
+
+    if (document.body.createTextRange) {
+      range = document.body.createTextRange();
+      // correct method for text range
+      range.moveToElementText(element);
+      range.select();
+    } else if (window.getSelection) {
+      selection = window.getSelection();
+
+      range = document.createRange();
+      // ensuring textElement is passed correctly
+      range.selectNodeContents(element);
+
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+
+    try {
+      document.execCommand("copy");
+    } catch (err) {
+      console.error("Unable to copy text: ", err);
+    } finally {
+      if (selection) {
+        selection.removeAllRanges();
+      }
+    }
+  }
+
+  getdata(config.name);
+
+
 </script>
 
 
