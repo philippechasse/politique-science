@@ -1,201 +1,373 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Guillaume Levrier - Politique.science</title>
-    <link rel="icon" type="image/svg" href="favicon.svg" />
+<title>Guillaume Levrier - Politique.science</title>
 
-    <style>
-        body {
-            font-family: 'Helvetica', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<link rel="icon" type="image/svg" href="favicon.svg" />
 
-        #headBlock {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #ddd;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "avenir next", avenir, helvetica, "helvetica neue", ubuntu, roboto, noto, "segoe ui", arial, sans-serif;
+    line-height: 1.5;
+  }
 
-        #headshotimg {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
+  @media (max-aspect-ratio: 2/2) {
+    #headBlock {
+      padding: 10px;
+      display: flex;
+      width: calc(100% - 20px);
+      top: 0px;
+      background: white;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        #name {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #222;
-            text-align: center;
-        }
+    #name {
+      font-size: 4rem;
+    }
 
-        #subtitle {
-            font-size: 1rem;
-            color: #555;
-            margin-bottom: 10px;
-            text-align: center;
-        }
+    #headshotimg {
+      max-width: 250px;
+      border-radius: 250px;
+    }
 
-        #links {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            padding-top: 10px;
-        }
+    #identity {
+      display: flex;
+      align-items: center;
+      min-width: 450px;
+      flex-direction: column;
+    }
 
-        .link {
-            font-size: 1rem;
-            color: #0077cc;
-            text-decoration: none;
-            padding: 5px 10px;
-            border: 1px solid #0077cc;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-            cursor: pointer;
-        }
+    .link {
+      font-size: 40px;
+      display: flex;
+      justify-content: space-between;
+    }
 
-        .link:hover {
-            background-color: #0077cc;
-            color: #ffffff;
-        }
+    #links {
+      padding: 60px;
+    }
+  }
 
-        .output_block {
-            background-color: #ffffff;
-            padding: 15px;
-            margin: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease-in-out;
-        }
+  @media (min-aspect-ratio: 2/2) {
+    #headshotimg {
+      max-width: 100px;
+      border-radius: 100px;
+    }
 
-        .output_block:hover {
-            transform: translateY(-5px);
-        }
+    .output_block {
+      padding-bottom: 45px;
 
-        .title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-        }
+    }
 
-        .date {
-            color: #777;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
+    #name {
+      font-size: 2rem;
+      padding-left: 20px;
+    }
 
-        @media (max-width: 768px) {
-            #headBlock {
-                padding: 15px;
-            }
+    #headBlock {
+      padding: 10px;
+      display: flex;
 
-            #name {
-                font-size: 1.8rem;
-            }
+      justify-content: space-between;
+      width: calc(100% - 20px);
+      position: sticky;
+      top: 0px;
+      background: white;
+    }
 
-            #subtitle {
-                font-size: 0.9rem;
-            }
+    #links {
+      width: 130px;
 
-            #links {
-                gap: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
+    }
+
+    #identity {
+      display: flex;
+      align-items: center;
+
+    }
+
+    .link {
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .accroche {
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 15px;
+  }
+
+  .abstract {
+    cursor: pointer;
+  }
+
+  a[href] {
+    color: red;
+  }
+
+  .output_block {
+    font-size: 1rem;
+    padding: 15px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+  }
+
+  .title {
+    font-weight: bolder;
+    font-size: 16px;
+  }
+
+  .title_other_lang {
+    font-style: italic;
+    color: gray;
+  }
+</style>
 
 <div id="headBlock">
-    <img id="headshotimg" src="./headshot.jpg" alt="Profile Picture">
+  <div id="identity">
+    <div id="headshot"><img id="headshotimg" src="./headshot.jpg"></div>
     <div id="name"></div>
-    <div id="subtitle">Candidat au doctorat en science politique à l'Université de Montréal et à Sciences Po</div>
-    <div id="links"></div>
+  </div>
+  <div id="links"></div>
 </div>
 
-<div id="descEN" class="accroche"></div>
-<div id="descFR" class="accroche"></div>
+<div class="accroche" id="descEN"></div>
 
-<div id="publications"></div>
+<div class="accroche" id="descFR"></div>
 
 <script src="./configuration.js"></script>
 
 <script>
-    document.getElementById('name').innerText = config.name;
 
-    const linksDiv = document.getElementById("links");
+  const linksDiv = document.getElementById("links");
 
-    const addLink = (linkConfig) => {
-        const rubrique = document.createElement("div");
-        rubrique.className = "link";
-        rubrique.innerHTML = `${linkConfig.label}: <a target="_blank" href="${linkConfig.url}">${linkConfig.value}</a>`;
-        linksDiv.append(rubrique);
-    };
+  const addLink = (linkConfig) => {
+    const rubrique = document.createElement("div");
+    rubrique.className = "link";
+    rubrique.innerHTML = `${linkConfig.label}: <a target="_blank" href="${linkConfig.url}">${linkConfig.value}</a>`
+    linksDiv.append(rubrique)
+  }
 
-    config.links.forEach(link => addLink(link));
+  config.links.forEach(link => addLink(link))
 
-    const email = document.createElement("div");
-    email.className = "link";
-    email.innerHTML = `email: ${config.email.name}<br>${config.email.domain}`;
-    linksDiv.append(email);
+  // insert name in document header
+  document.getElementById("name").innerText = config.name;
+  document.title = config.name;
 
-    document.getElementById('descEN').innerText = config.description.EN.short;
-    document.getElementById('descFR').innerText = config.description.FR.short;
+  // insert email
 
-    // Load publications into a specific div
-    const getdata = (val) =>
-        fetch(
-            `https://api.archives-ouvertes.fr/search/?q=${encodeURIComponent(val)}&wt=json&rows=10000&fl=docType_s,docid,authFullName_s,label_s,abstract_s,producedDate_s,conferenceTitle_s,language_s,subTitle_s,title_s,doiId_s,halId_s,journalTitle_s`
-        )
-            .then(response => response.json())
-            .then(r => r.response.docs)
-            .then(r => {
-                const publicationsDiv = document.getElementById("publications");
-                publicationsDiv.innerHTML = ""; // Clear previous content
+  const email = document.createElement("div");
+  email.className = "link";
+  email.innerHTML = `email: ${config.email.name}<br>${config.email.domain}`
+  linksDiv.append(email)
 
-                r.forEach(output => {
-                    const cont = document.createElement("div");
-                    cont.className = "output_block";
+  // populate personal description
+  const personDescription = () => {
+    Object.keys(config.description).forEach(d => {
+      const div = document.getElementById("desc" + d)
+      div.innerHTML = config.description[d].short;
+    })
+  }
 
-                    const title = document.createElement("div");
-                    title.className = "title";
-                    title.innerText = output.title_s ? output.title_s[0] : 'No Title';
-                    cont.append(title);
+  personDescription();
 
-                    const authors = document.createElement("div");
-                    authors.innerText = output.authFullName_s ? output.authFullName_s.join(", ") : 'No Authors';
-                    cont.append(authors);
+  const getdata = (val) =>
+    fetch(
+      `https://api.archives-ouvertes.fr/search/?q=${val}&wt=json&rows=10000&fl=docType_s,docid,authFullName_s,label_s,abstract_s,producedDate_s,conferenceTitle_s,language_s,subTitle_s,title_s,doiId_s,halId_s,journalTitle_s`
+    )
+      .then((response) => response.json())
+      .then((r) => r.response.docs)
+      .then((r) => {
 
-                    const date = document.createElement("div");
-                    date.className = "date";
-                    date.innerText = `${output.producedDate_s || 'No Date'} - ${output.docType_s || 'No Type'}`;
-                    cont.append(date);
+        const siftData = (data, authName) => {
+          const authLower = authName.toLowerCase();
 
-                    publicationsDiv.append(cont);
-                });
-            })
-            .catch(error => console.error("Error loading data:", error));
+          const sifted = [];
 
-    getdata(config.name);
+          data.forEach((d) => {
+            const authorMap = {};
+
+            d.authFullName_s.forEach(
+              (auth) => (authorMap[auth.toLowerCase()] = 1)
+            );
+
+            if (authorMap.hasOwnProperty(authLower)) {
+              d.date = new Date(d.producedDate_s);
+              sifted.push(d);
+            }
+          });
+
+          return sifted.sort((a, b) => b.date - a.date);
+        };
+        const createblock = (output) => {
+          // for each sci output, create an HTML block
+          const cont = document.createElement("div");
+          cont.className = "output_block";
+
+          const title = document.createElement("div");
+
+          for (let i = 0; i < output.title_s.length; ++i) {
+            const title_l = document.createElement("div");
+            if (i === 0) {
+              title_l.className = "title";
+            } else {
+              title_l.className = "title_other_lang";
+            }
+
+            title_l.innerText = output.title_s[i];
+            title.append(title_l);
+          }
+
+          const authors = document.createElement("div");
+          authors.className = "authors";
+
+          for (let i = 0; i < output.authFullName_s.length; ++i) {
+            authors.innerText += output.authFullName_s[i];
+            if (
+              output.authFullName_s.length > 1 &&
+              i < output.authFullName_s.length - 1
+            ) {
+              authors.innerText += ", ";
+            }
+          }
+
+          cont.append(title);
+
+          cont.append(authors);
+
+          var venue = ""
+
+          if (output.hasOwnProperty("journalTitle_s")) {
+            venue = " - " + output.journalTitle_s;
+          }
+
+          if (output.hasOwnProperty("conferenceTitle_s")) {
+            venue = " - " + output.conferenceTitle_s;
+          }
+
+          const date = document.createElement("div");
+          date.className = "date";
+          date.innerText =
+            output.producedDate_s + venue + " - " + output.docType_s.toLowerCase();
+          cont.append(date);
+
+          if (output.hasOwnProperty("abstract_s")) {
+            const lang = "[" + output.language_s[0].toUpperCase() + "] ";
+            const abstract = document.createElement("div");
+            abstract.className = "abstract";
+            abstract.innerText =
+              lang +
+              output.abstract_s[0].substring(0, 240) +
+              "… [click to read more]";
+
+            abstract.addEventListener("click", (e) => {
+              if (abstract.innerText.length < 270) {
+                abstract.innerText = lang + output.abstract_s[0];
+              } else {
+                abstract.innerText =
+                  lang +
+                  output.abstract_s[0].substring(0, 240) +
+                  "… [click to read more]";
+              }
+            });
+
+            cont.append(abstract);
+          }
+
+          if (output.hasOwnProperty("doiId_s")) {
+            const doi = document.createElement("div");
+
+            doi.innerHTML = `<a class="doi" href="https://doi.org/${output.doiId_s}" target="_blank">${output.doiId_s}</a>`;
+            cont.append(doi);
+          } else {
+            const hal = document.createElement("div");
+
+            hal.innerHTML = `<a href="https://hal.science/${output.halId_s}" target="_blank">${output.halId_s}</a>`;
+            cont.append(hal);
+          }
+
+          cont.append(document.createElement("br"))
+
+
+          return cont;
+        };
+
+        const sifted = siftData(r, val);
+
+        const createList = () => {
+          const container = document.createElement("div");
+
+          const list = document.createElement("div");
+          list.id = "doclist"
+          sifted.forEach((d) => list.append(createblock(d)));
+          container.append(list, genrateButtons())
+          document.body.append(container);
+        };
+
+        createList();
+      })
+
+
+  const genrateButtons = () => {
+    const buttonList = document.createElement("div");
+
+    // create a bibliography;
+    const biblioButton = document.createElement("button");
+    biblioButton.innerText = "Copy document list to clipboard"
+    biblioButton.addEventListener("click", () => {
+      const doclist = document.getElementById("doclist")
+      const abstracts = doclist.getElementsByClassName("abstract")
+      for (let i = 0; i < abstracts.length; i++) {
+        abstracts[i].innerText = abstracts[i].innerText.replace("[click to read more]", "")
+
+      }
+      copyElementToClipboard(doclist)
+    })
+
+    buttonList.append(biblioButton)
+
+    return buttonList
+  }
+
+  //taken from https://stackoverflow.com/questions/48554043/javascript-copy-element-to-clipboard-with-all-styles
+  function copyElementToClipboard(element) {
+    let range;
+    let selection;
+
+    if (!element) {
+      console.error("No element to copy");
+      return;
+    }
+
+    if (document.body.createTextRange) {
+      range = document.body.createTextRange();
+      // correct method for text range
+      range.moveToElementText(element);
+      range.select();
+    } else if (window.getSelection) {
+      selection = window.getSelection();
+
+      range = document.createRange();
+      // ensuring textElement is passed correctly
+      range.selectNodeContents(element);
+
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+
+    try {
+      document.execCommand("copy");
+    } catch (err) {
+      console.error("Unable to copy text: ", err);
+    } finally {
+      if (selection) {
+        selection.removeAllRanges();
+      }
+    }
+  }
+
+  getdata(config.name);
+
+
 </script>
-
-</body>
-</html>
 
