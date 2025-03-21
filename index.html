@@ -180,16 +180,31 @@
 
     // Function to load publications
     const getData = (val) => {
-        fetch(`https://api.archives-ouvertes.fr/search/?q=${val}&wt=json&rows=10000&fl=docType_s,docid,authFullName_s,label_s,abstract_s,producedDate_s,conferenceTitle_s,language_s,subTitle_s,title_s,doiId_s,halId_s,journalTitle_s`)
-            .then(response => response.json())
+        const query = encodeURIComponent(val);
+        fetch(`https://api.archives-ouvertes.fr/search/?q=${query}&wt=json&rows=10000&fl=docType_s,docid,authFullName_s,label_s,abstract_s,producedDate_s,conferenceTitle_s,language_s,subTitle_s,title_s,doiId_s,halId_s,journalTitle_s`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+                return response.json();
+            })
             .then(data => {
                 const publicationsDiv = document.getElementById("publications");
+                publicationsDiv.innerHTML = "";
                 data.response.docs.forEach(doc => {
-                    const block = document.createElement("div");
-                    block.className = "output_block";
-                    block.innerHTML = `<div class='title'>${doc.title_s[0]}</div><div class='date'>${doc.producedDate_s} - ${doc.docType_s}</div>`;
-                    publicationsDiv.appendChild(block);
+                    if (doc.title_s && doc.producedDate_s && doc.docType_s) {
+                        const block = document.createElement("div");
+                        block.className = "output_block";
+                        block.innerHTML = `
+                            <div class='title'>${doc.title_s[0] || 'No Title'}</div>
+                            <div class='date'>${doc.producedDate_s || 'No Date'} - ${doc.docType_s || 'No Type'}</div>
+                        `;
+                        publicationsDiv.appendChild(block);
+                    }
                 });
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
             });
     };
 
